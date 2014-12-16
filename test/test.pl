@@ -80,6 +80,7 @@ test_vcf_query($opts,in=>'query.filter',out=>'query.13.out',args=>q[-f'%POS[ %GT
 test_vcf_query($opts,in=>'query.filter',out=>'query.14.out',args=>q[-f'%POS[ %GT]\\n' -i'GT!="1"']);
 test_vcf_query($opts,in=>'query.filter',out=>'query.15.out',args=>q[-f'%POS[ %GT]\\n' -e'GT ="1"']);
 test_vcf_query($opts,in=>'query.filter',out=>'query.16.out',args=>q[-f'%POS[ %GT]\\n' -e'GT!="1"']);
+test_vcf_query($opts,in=>'query.2',out=>'query.17.out',args=>q[-f'%XX_A %XX.A %XX.A0 %xx.a0\\n']);
 test_vcf_norm($opts,in=>'norm',out=>'norm.out',fai=>'norm');
 test_vcf_norm($opts,in=>'norm.split',out=>'norm.split.out',args=>'-m-');
 test_vcf_norm($opts,in=>'norm.merge',out=>'norm.merge.out',args=>'-m+');
@@ -110,6 +111,9 @@ test_vcf_filter($opts,in=>'view.filter',out=>'view.filter.8.out',args=>q[-S. -e'
 test_vcf_filter($opts,in=>'view.filter',out=>'view.filter.9.out',args=>q[-S. -e'FMT/FGS[1]="BBB"'],reg=>'');
 test_vcf_filter($opts,in=>'view.filter',out=>'view.filter.10.out',args=>q[-S. -e'FMT/FGS[4]="EE"'],reg=>'');
 test_vcf_filter($opts,in=>'view.filter',out=>'view.filter.11.out',args=>q[-S. -e'FMT/STR="XX"'],reg=>'');
+test_vcf_view($opts,in=>'view.minmaxac',out=>'view.minmaxac.1.out',args=>q[-H -C5:nonmajor],reg=>'');
+test_vcf_view($opts,in=>'view.minmaxac',out=>'view.minmaxac.2.out',args=>q[-H -c6:nonmajor],reg=>'');
+test_vcf_view($opts,in=>'view.minmaxac',out=>'view.minmaxac.1.out',args=>q[-H -q0.3:major],reg=>'');
 test_vcf_call($opts,in=>'mpileup',out=>'mpileup.1.out',args=>'-mv');
 test_vcf_call($opts,in=>'mpileup',out=>'mpileup.2.out',args=>'-mvg0');
 test_vcf_call_cAls($opts,in=>'mpileup',out=>'mpileup.cAls.out',tab=>'mpileup');
@@ -707,6 +711,7 @@ sub test_vcf_reheader
         my %bcf_args = ();
         if ( $file=~/\.bcf$/ && -e "$$opts{path}/$args{out}.bcf" ) { %bcf_args = ( out=>"$args{out}.bcf" ); }
         test_cmd($opts,%args,%bcf_args,cmd=>"$$opts{bin}/bcftools reheader $arg $file | $$opts{bin}/bcftools view | grep -v ^##bcftools_");
+        test_cmd($opts,%args,%bcf_args,cmd=>"cat $file | $$opts{bin}/bcftools reheader $arg | $$opts{bin}/bcftools view | grep -v ^##bcftools_");
     }
 }
 sub test_rename_chrs
